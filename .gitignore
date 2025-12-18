@@ -2,6 +2,7 @@ node_modules
 .DS_Store
 dist
 dist-ssr
+docs
 *.local
 count.txt
 .env
@@ -11,3 +12,5 @@ count.txt
 .output
 .vinxi
 todos.json
+
+/generated/prisma

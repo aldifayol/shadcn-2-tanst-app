@@ -1,8 +1,20 @@
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+import { HeadContent, Outlet, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import appCss from '../styles.css?url'
+import { ModeToggle } from '@/components/mode-toggle'
+import { UserMenu } from '@/components/user-menu'
+
+const themeScript = `
+  (function() {
+    const theme = localStorage.getItem('theme') || 'system';
+    const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (theme === 'dark' || (theme === 'system' && systemDark)) {
+      document.documentElement.classList.add('dark');
+    }
+  })();
+`
 
 export const Route = createRootRoute({
   head: () => ({
@@ -24,14 +36,32 @@ export const Route = createRootRoute({
         href: appCss,
       },
     ],
+    scripts: [
+      {
+        children: themeScript,
+      },
+    ],
   }),
 
   shellComponent: RootDocument,
+  component: RootComponent,
 })
+
+function RootComponent() {
+  return (
+    <>
+      <header className="fixed top-0 right-0 p-4 z-50 flex items-center gap-2">
+        <UserMenu />
+        <ModeToggle />
+      </header>
+      <Outlet />
+    </>
+  )
+}
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
